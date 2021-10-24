@@ -1,0 +1,8 @@
+name: RandomTrip
+main: randomtrip.io.github.yyyork.RandomTrip
+version: 1.0
+api-version: 1.16
+commands:
+  randomtrip:
+    usage: "/randomtrip go"
+    description: "just go!"
