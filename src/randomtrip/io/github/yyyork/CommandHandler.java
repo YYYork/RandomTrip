@@ -42,26 +42,14 @@ public class CommandHandler implements CommandExecutor {
                 int chance = new Integer(telworld[1]);
                 if(random.nextInt(100)<=chance){
                     player.sendMessage("§8[§6阿巴阿巴航海系统§8]§a你发现了一个真正的时空波！正在传送！");
-                    Bukkit.getScheduler().runTaskLater(RandomTrip.instance,()->player.playSound(
-                            player.getLocation(), // Location 对象确定位置
-                            Sound.UI_TOAST_CHALLENGE_COMPLETE, // 音效
-                            SoundCategory.HOSTILE, // 可选，音效分类
-                            1, // 音量，参考下面的说明
-                            1 // 播放速度
-                    ),30);
+                    Bukkit.getScheduler().runTaskLater(RandomTrip.instance,()->SoundsHelper.playFindRealTimeWave(player),30);
                     Location location = new Location(Bukkit.getWorld(worldname),34,84,-301);
                     player.teleport(location);
                     return true;
                 }else{
                     player.setHealth(0);
                     player.sendMessage("§8[§6阿巴阿巴航海系统§8]§4很遗憾，这个时空波是假的。");
-                    Bukkit.getScheduler().runTaskLater(RandomTrip.instance,()->player.playSound(
-                            player.getLocation(), // Location 对象确定位置
-                            Sound.ENTITY_ENDERMAN_DEATH, // 音效
-                            SoundCategory.HOSTILE, // 可选，音效分类
-                            1, // 音量，参考下面的说明
-                            1 // 播放速度
-                    ),30);
+                    Bukkit.getScheduler().runTaskLater(RandomTrip.instance,()->SoundsHelper.playFindFakeTimeWave(player),30);
                     return true;
                 }
             }

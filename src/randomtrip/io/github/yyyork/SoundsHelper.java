@@ -44,4 +44,24 @@ public class SoundsHelper {
                 1 // 播放速度
         );
     }
+
+    public static void playFindFakeTimeWave(Player player){
+        player.playSound(
+                player.getLocation(), // Location 对象确定位置
+                Sound.ENTITY_ENDERMAN_DEATH, // 音效
+                SoundCategory.HOSTILE, // 可选，音效分类
+                1, // 音量，参考下面的说明
+                1 // 播放速度
+        );
+    }
+
+    public static void playFindRealTimeWave(Player player){
+        player.playSound(
+                player.getLocation(), // Location 对象确定位置
+                Sound.UI_TOAST_CHALLENGE_COMPLETE, // 音效
+                SoundCategory.HOSTILE, // 可选，音效分类
+                1, // 音量，参考下面的说明
+                1 // 播放速度
+        );
+    }
 }

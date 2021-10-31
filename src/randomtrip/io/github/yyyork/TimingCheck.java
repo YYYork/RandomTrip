@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -14,6 +15,8 @@ import org.bukkit.scheduler.BukkitTask;
 public class TimingCheck {
     public BukkitTask checkRun;
     public BukkitTask twiceRun;
+    public BukkitTask playParticles;
+
     private static void sendJSON(Player player){
         BaseComponent teleport = new TextComponent("您发现了一个新时空波！点我前往！（可能会导致死亡）");
         teleport.setBold(true);
@@ -60,7 +63,7 @@ public class TimingCheck {
         }.runTaskAsynchronously(RandomTrip.instance);
     }
 
-    private  void twiceCheck(Player player){
+    private void twiceCheck(Player player){
         SoundsHelper.playTellDistanceSounds(player);
         player.sendMessage
                 ("§8[§6阿巴阿巴航海系统§8]§7航行距离达到，开始寻找时空波。");
@@ -78,7 +81,12 @@ public class TimingCheck {
             public void run(){
                 while(MyUtils.isTravelStart(player)){
                     int distance = MyUtils.getTravelDistance(player);
-
+                if(MyUtils.isNearDestinationToPlayParticle(player)){
+                    if(playParticles==null){
+                        Location base = new Location(player.getWorld(),MyTravelDatabaseFile.getRandomDestinationX(player),0,MyTravelDatabaseFile.getRandomDestinationY(player));
+                        playParticles(base,player);
+                    }
+                }
                 if(MyUtils.isNearDestination(player)){
                     //在附近
                     Bukkit.getScheduler().runTask(RandomTrip.instance, () -> {
@@ -109,8 +117,24 @@ public class TimingCheck {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+
                     }
             }}
+        }.runTaskAsynchronously(RandomTrip.instance);
+    }
+
+    private void playParticles(Location base,Player player){
+        playParticles = new BukkitRunnable(){
+            @Override
+            public void run(){
+                while(MyUtils.isTravelStart(player)){
+                Bukkit.getScheduler().runTask(RandomTrip.instance, () -> new MyParticle(base));
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            } }
         }.runTaskAsynchronously(RandomTrip.instance);
     }
 }

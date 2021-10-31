@@ -21,4 +21,8 @@ public class RandomTrip extends JavaPlugin {
         this.getLogger().info("§a[RandomTrip]§eRandomTrip v1.0 开启成功！");
     }
 
+    @Override
+    public void onDisable() {
+        Bukkit.getScheduler().cancelTasks(this);
+    }
 }

@@ -1,9 +1,8 @@
 package randomtrip.io.github.yyyork;
 
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Date;
 import java.util.Random;
 
 public class MyUtils {
@@ -22,7 +21,8 @@ public class MyUtils {
         return distance;
     }
 
-    public static void setTravelFrom(Player player){
+    public static void setTravelFrom(Player player){//可能线程没有完全关闭导致计时变快，下周来试试能不能等线程关闭了才能让玩家航海。
+        MyTravelDatabaseFile.setLastTravelTime(player);
         FileManager.travelDatabase_file.set(player.displayName().toString().toLowerCase()+".isTravelStart",true);
         MyTravelDatabaseFile.setXFrom(player, (int)player.getLocation().getX());
         MyTravelDatabaseFile.setYFrom(player, (int)player.getLocation().getZ());
@@ -77,17 +77,62 @@ public class MyUtils {
 
     }
 
+    public  static boolean isNearDestinationToPlayParticle(Player player){
+
+        if(distanceOfDestination(player)<=Math.pow(MyConfigFile.getDistanceRange()+100,2)){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
     public static void deletePlayer(Player player, TimingCheck tc){
         if(tc.checkRun!=null){
         tc.checkRun.cancel();
-        }//玩家删除时删除玩家的计时播报任务
+        }//玩家结束航海时 删除玩家的计时播报任务
         if(tc.twiceRun!=null){
         tc.twiceRun.cancel();
-        }//玩家删除时删除玩家的计时播报任务
+        }//玩家结束航海时 删除玩家的计时播报任务
         FileManager.travelDatabase_file.set(player.displayName().toString().toLowerCase()+".isTravelStart",false);
     }
 
     public static boolean isTravelStart(Player player){
         return FileManager.travelDatabase_file.getBoolean(player.displayName().toString().toLowerCase()+".isTravelStart");
+    }
+
+    public static boolean isInCoolingTime(Player player){
+
+        long lastTime = MyTravelDatabaseFile.getLastTravelTime(player);
+        long coolingTime;
+        if(player.hasPermission("randomtrip.vipgo")){
+            coolingTime = MyConfigFile.getVipCollingTime();
+        }else{
+            coolingTime = MyConfigFile.getCollingTime();
+        }
+        Date date = new Date();
+        long gapTime = date.getTime()-lastTime; //和上一次坐船的间隔时间
+        if(gapTime<coolingTime){//如果小于冷却时间就返回true
+            return true;
+        }else{
+            return false;//大于冷却时间返回false
+        }
+    }
+
+        public static long getRemainingCoolingTime(Player player){
+            long lastTime = MyTravelDatabaseFile.getLastTravelTime(player);
+            long coolingTime;
+            if(player.hasPermission("randomtrip.vipgo")){
+                coolingTime = MyConfigFile.getVipCollingTime();
+            }else{
+                coolingTime = MyConfigFile.getCollingTime();
+            }
+            Date date = new Date();
+            long gapTime = date.getTime()-lastTime;  //和上一次坐船的间隔时间
+            if(isInCoolingTime(player)){
+            return (coolingTime - gapTime);//返回剩余坐船时间
+            }else{
+                return -1;//-1为错误时间
+            }
     }
 }

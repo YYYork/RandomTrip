@@ -6,3 +6,10 @@ commands:
   randomtrip:
     usage: "/randomtrip go"
     description: "just go!"
+permissions:
+  randomtrip.go:
+    description: Allow a person sail
+    default: false
+  randomtrip.vipgo:
+    description: Allow a vip person sail
+    default: false

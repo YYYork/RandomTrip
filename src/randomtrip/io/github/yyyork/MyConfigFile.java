@@ -14,4 +14,7 @@ public class MyConfigFile {
         return FileManager.config_file.getDouble("destination-range");
     }
 
+    public static long getCollingTime(){ return FileManager.config_file.getLong("cooling-Time"); }
+
+    public static long getVipCollingTime(){ return FileManager.config_file.getLong("vip-cooling-Time"); }
 }

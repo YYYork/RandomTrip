@@ -1,3 +1,6 @@
 travel-random-min-distance: 500
 travel-random-max-distance: 1000
 destination-range: 50
+cooling-Time: 30000
+vip-cooling-Time: 20000
+# 1s = 1000ms

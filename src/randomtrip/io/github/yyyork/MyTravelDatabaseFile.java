@@ -2,6 +2,9 @@ package randomtrip.io.github.yyyork;
 
 import org.bukkit.entity.Player;
 
+import java.util.Date;
+import java.util.Objects;
+
 public class MyTravelDatabaseFile {
 
     public static int getXFrom(Player player){
@@ -29,6 +32,11 @@ public class MyTravelDatabaseFile {
                 (player.displayName().toString().toLowerCase() +".RandomDestinationY");
     }
 
+    public static long getLastTravelTime(Player player){
+        return FileManager.travelDatabase_file.getLong
+                (player.displayName().toString().toLowerCase() +".LastTravelTime");
+    }
+
     public static void setXFrom(Player player,int x){
         FileManager.travelDatabase_file.set
                 (player.displayName().toString().toLowerCase() +".XFrom",x);
@@ -52,5 +60,17 @@ public class MyTravelDatabaseFile {
     public static void setRandomDestinationY(Player player,int desY){
         FileManager.travelDatabase_file.set
                 (player.displayName().toString().toLowerCase() +".RandomDestinationY",desY);
+    }
+
+    public static void setLastTravelTime(Player player){
+        Date date = new Date();
+        long time = date.getTime();
+        FileManager.travelDatabase_file.set
+                (player.displayName().toString().toLowerCase() +".LastTravelTime",time);
+    }
+
+    public static void setDefaultLastTravelTime(Player player){
+        FileManager.travelDatabase_file.set
+                (player.displayName().toString().toLowerCase() +".LastTravelTime",0);
     }
 }
